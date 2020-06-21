@@ -1,8 +1,8 @@
-import jupiter
+from lexer import Lexer
 
 while True:
     text = input("jupiter > ")
-    tokens, error = jupiter.run(text)
+    out, error = Lexer.run(text)
 
     if error: print(str(error))
-    else: print(tokens)
+    else: print(out)

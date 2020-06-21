@@ -1,33 +1,16 @@
-import abc
-
-##########
-# TOKENS
-##########
-
-T_INT = 'INT'
-T_FLOAT = 'FLOAT'
-T_PLUS = 'PLUS'
-T_MINUS = 'MINUS'
-T_MUL = 'MUL'
-T_DIV = 'DIV'
-T_LPAREN = 'LPAREN'
-T_RPAREN = 'RPAREN'
+from lexer.Tokens import *
+from parser_and_ast.Parser import *
+#########
+# TOKEN
+#########
 
 class Token:
-    def __init__(self, _type, _value = None):
+    def __init__(self, _type, _value=None):
         self.type = _type
-        self.value= _value
+        self.value = _value
 
     def __repr__(self):
         return f'{self.type} : {self.value}' if self.value else f'{self.type}'
-
-
-##########
-# CONSTANTS
-##########
-
-DIGITS = '0123456789'
-
 
 ##########
 # CharError
@@ -116,7 +99,14 @@ class Lexer:
 #######
 
 def run(text):
+    # Gen Tokens
     lexer = Lexer(text)
     tokens, error = lexer.create_tokens()
 
-    return tokens, error
+    if error: return None, error
+
+    # Gen AST
+    parser = Parser(tokens)
+    tree = parser.parse()
+
+    return tree, None
