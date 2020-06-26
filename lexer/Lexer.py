@@ -1,11 +1,13 @@
 from lexer.Tokens import *
 from parser_and_ast.Parser import *
+from interpreter.Interpreter import *
+
 #########
 # TOKEN
 #########
 
 class Token:
-    def __init__(self, _type, _value=None):
+    def __init__(self, _type, _value=None, pos_start_ = None, pos_end_ = None):
         self.type = _type
         self.value = _value
 
@@ -52,31 +54,33 @@ class Lexer:
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
             elif self.current_char == '+':
-                tokens.append(Token(T_PLUS))
+                tokens.append(Token(T_PLUS, pos_start_=self.pos))
                 self.analyze_text()
             elif self.current_char == '-':
-                tokens.append(Token(T_MINUS))
+                tokens.append(Token(T_MINUS, pos_start_=self.pos))
                 self.analyze_text()
             elif self.current_char == '*':
-                tokens.append(Token(T_MUL))
+                tokens.append(Token(T_MUL, pos_start_=self.pos))
                 self.analyze_text()
             elif self.current_char == '/':
-                tokens.append(Token(T_DIV))
+                tokens.append(Token(T_DIV, pos_start_=self.pos))
                 self.analyze_text()
             elif self.current_char == '(':
-                tokens.append(Token(T_LPAREN))
+                tokens.append(Token(T_LPAREN, pos_start_=self.pos))
                 self.analyze_text()
             elif self.current_char == ')':
-                tokens.append(Token(T_RPAREN))
+                tokens.append(Token(T_RPAREN, pos_start_=self.pos))
                 self.analyze_text()
             else:
                 return [], InvalidCharError("'" + self.current_char + "'")
 
+        tokens.append(Token(T_EOF, pos_start_=self.pos))
         return tokens, []
 
     def make_number(self):
         num = ''
         dot_count = 0
+        pos_start = self.pos
 
         while self.current_char != None and self.current_char in DIGITS + '.':
             if self.current_char == '.':
@@ -89,9 +93,9 @@ class Lexer:
             self.analyze_text()
 
         if dot_count == 0:
-            return Token(T_INT, int(num))
+            return Token(T_INT, int(num), pos_start, self.pos)
         else:
-            return Token(T_FLOAT, float(num))
+            return Token(T_FLOAT, float(num), pos_start, self.pos)
 
 
 #######
@@ -108,5 +112,9 @@ def run(text):
     # Gen AST
     parser = Parser(tokens)
     tree = parser.parse()
+    if tree.error: return None, tree.error
 
-    return tree, None
+    interpreter = Interpreter()
+    interpreter.process_node(tree.node)
+
+    return None, None
