@@ -17,7 +17,7 @@ class Parser:
     def parse(self):
         result = self.analyze_expr()
         if not result.error and self.current_tok.type != T_EOF:
-            return result.failure("Syntax Error")
+            return result.failure("Syntax error")
 
         return result
 
@@ -57,9 +57,9 @@ class Parser:
                 result.register(self.next_token())
                 return result.success(expr)
             else:
-                return result.failure("Error")
+                return result.failure("error")
 
-        return result.failure("Error")
+        return result.failure("error")
 
     def analyze_term(self):
        return self.analyze_op(self.analyze_factor, (T_MUL, T_DIV))

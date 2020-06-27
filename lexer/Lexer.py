@@ -15,22 +15,6 @@ class Token:
         return f'{self.type} : {self.value}' if self.value else f'{self.type}'
 
 ##########
-# CharError
-##########
-
-class Error():
-    def __init__(self, _name, _info):
-        self.name = _name
-        self.info = _info
-
-    def __str__(self):
-        return f'{self.name}: {self.info}'
-
-class InvalidCharError(Error):
-    def __init__(self, _info):
-        super().__init__('Invalid Char', _info)
-
-##########
 # LEXER
 ##########
 
@@ -115,6 +99,6 @@ def run(text):
     if tree.error: return None, tree.error
 
     interpreter = Interpreter()
-    interpreter.process_node(tree.node)
+    res = interpreter.process_node(tree.node)
 
-    return None, None
+    return res.value, res.error
