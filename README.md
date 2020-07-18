@@ -11,4 +11,4 @@ My own implementation of new interpreter used for author's craeted language 'Jup
 - [x] Add substraction 
 - [x] Add Division
 - [x] Add Multiplying
-- [] Add some other functionality (creating variables, functions etc.)
+- [ ] Add some other functionality (creating variables, functions etc.)
